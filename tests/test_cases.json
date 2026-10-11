@@ -1,0 +1,37 @@
+[
+  {
+    "text": "The government may arrest and detain any person without telling them the reason.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-9-2"]
+  },
+  {
+    "text": "A suspect has no right to a lawyer of their own choosing.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-14-3-b"]
+  },
+  {
+    "text": "Anyone may be held in custody indefinitely without being told the charges.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-9-2"]
+  },
+  {
+    "text": "Citizens are forbidden from sharing ideas or information in writing or in print.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-19-2"]
+  },
+  {
+    "text": "Newspapers must not publish criticism of the government.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-19-2"]
+  },
+  {
+    "text": "Defendants shall not be given an interpreter in court.",
+    "country": "Sri Lanka",
+    "expected": ["ICCPR-14-3"]
+  },
+  {
+    "text": "The government may arrest and detain any person without telling them the reason.",
+    "country": "Cuba",
+    "expected": []
+  }
+]
