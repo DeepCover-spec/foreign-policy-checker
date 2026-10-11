@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "treaty-checker"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["rank-bm25", "snowballstemmer"]
+dependencies = ["rank-bm25", "snowballstemmer", "streamlit"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
