@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -26,6 +26,17 @@ class Clause:
             if self.subparagraph:
                 cite += f"({self.subparagraph})"
         return cite
+
+
+@dataclass(frozen=True)
+class Ratification:
+    country: str
+    treaty: str
+    status: str                  # ratified / acceded / succeeded / signed
+    source_url: str
+    retrieved_on: str            # date you looked it up, YYYY-MM-DD
+    date: str | None = None      # date of ratification/accession, YYYY-MM-DD
+    reservations: list[str] = field(default_factory=list)
 
 
 if __name__ == "__main__":
