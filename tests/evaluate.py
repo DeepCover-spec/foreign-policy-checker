@@ -12,7 +12,7 @@ K = 5
 def main() -> None:
     build_db()
     conn = connect()
-    retriever = Retriever(load_clauses("data/seed_clauses.json"))
+    retriever = Retriever(load_clauses("data/clauses.json"))
     ratifications = load_ratifications()
     with open("tests/test_cases.json", encoding="utf-8") as f:
         cases = json.load(f)

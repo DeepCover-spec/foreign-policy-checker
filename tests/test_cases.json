@@ -27,7 +27,7 @@
   {
     "text": "Defendants shall not be given an interpreter in court.",
     "country": "Sri Lanka",
-    "expected": ["ICCPR-14-3"]
+    "expected": ["ICCPR-14-3-f"]
   },
   {
     "text": "The government may arrest and detain any person without telling them the reason.",

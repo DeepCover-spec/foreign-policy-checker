@@ -22,8 +22,10 @@ def tokenize(text: str) -> list[str]:
 
 class Retriever:
     def __init__(self, clauses: list[Clause]):
-        # Whole-article records are for display context only, so don't index them
-        self.clauses = [c for c in clauses if c.paragraph is not None]
+        # Index only the smallest units (clauses nobody else points to as a parent).
+        # Their parents are for display context only.
+        parents = {c.parent_id for c in clauses if c.parent_id}
+        self.clauses = [c for c in clauses if c.id not in parents]
         self.bm25 = BM25Okapi([tokenize(c.text) for c in self.clauses])
 
     def search(self, query: str, treaties: set[str], k: int = 5) -> list[tuple[Clause, float]]:
@@ -36,7 +38,7 @@ if __name__ == "__main__":
     from treaty_checker.loader import load_clauses
     from treaty_checker.ratifications import bound_by, load_ratifications
 
-    clauses = load_clauses("data/seed_clauses.json")
+    clauses = load_clauses("data/clauses.json")
     treaties = {r.treaty for r in bound_by("Sri Lanka", load_ratifications())}
     retriever = Retriever(clauses)
 

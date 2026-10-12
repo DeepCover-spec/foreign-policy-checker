@@ -23,8 +23,8 @@ class Clause:
         cite = f"{self.treaty}, Article {self.article}"
         if self.paragraph:
             cite += f"({self.paragraph})"
-            if self.subparagraph:
-                cite += f"({self.subparagraph})"
+        if self.subparagraph:
+            cite += f"({self.subparagraph})"
         return cite
 
 

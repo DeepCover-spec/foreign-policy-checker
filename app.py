@@ -12,7 +12,7 @@ st.set_page_config(page_title="Treaty Clause Checker")
 @st.cache_resource
 def setup():
     build_db()
-    return Retriever(load_clauses("data/seed_clauses.json")), load_ratifications()
+    return Retriever(load_clauses("data/clauses.json")), load_ratifications()
 
 
 retriever, ratifications = setup()

@@ -27,7 +27,7 @@ def connect(path: Path = DB_PATH) -> sqlite3.Connection:
     return conn
 
 
-def build_db(seed_path: str = "data/seed_clauses.json", db_path: Path = DB_PATH) -> None:
+def build_db(seed_path: str = "data/clauses.json", db_path: Path = DB_PATH) -> None:
     clauses = load_clauses(seed_path)
     conn = connect(db_path)
     conn.executescript("DROP TABLE IF EXISTS clauses;" + SCHEMA)

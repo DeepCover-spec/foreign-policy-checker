@@ -30,7 +30,7 @@ def check(text, country, retriever, conn, ratifications, k=5) -> list[Finding]:
 if __name__ == "__main__":
     build_db()
     conn = connect()
-    retriever = Retriever(load_clauses("data/seed_clauses.json"))
+    retriever = Retriever(load_clauses("data/clauses.json"))
     ratifications = load_ratifications()
 
     text = "The government may arrest and detain any person without telling them the reason."
