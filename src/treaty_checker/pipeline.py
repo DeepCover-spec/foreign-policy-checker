@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from treaty_checker.db import build_db, connect, get_clause
+from treaty_checker.llm import LLMError, analyze
 from treaty_checker.loader import load_clauses
 from treaty_checker.models import Clause, Ratification
 from treaty_checker.ratifications import bound_by, load_ratifications
@@ -13,6 +14,8 @@ class Finding:
     score: float
     ratification: Ratification
     parent: Clause | None     # the whole article or paragraph, for context
+    reasoning: str | None = None   # LLM note (only set by check_llm)
+    confidence: str | None = None  # "high" / "medium" / "low" (only set by check_llm)
 
 
 def check(text, country, retriever, conn, ratifications, k=5) -> list[Finding]:
@@ -25,6 +28,39 @@ def check(text, country, retriever, conn, ratifications, k=5) -> list[Finding]:
         parent = get_clause(clause.parent_id, conn) if clause.parent_id else None
         findings.append(Finding(clause, score, bound[clause.treaty], parent))
     return findings
+
+
+def check_llm(text, country, retriever, conn, ratifications, analyze_fn=analyze):
+    """Retrieve a wide candidate list, let the LLM choose from it, validate in code.
+
+    Returns (findings, note). `note` is None, or a message to show the user
+    (the LLM step failed and retrieval results are shown instead, or some IDs were dropped).
+    """
+    bound = {r.treaty: r for r in bound_by(country, ratifications)}
+    if not bound:
+        return [], None
+    candidates = retriever.candidates(text, set(bound))
+    if not candidates:
+        return [], None
+
+    try:
+        result = analyze_fn(text, candidates)
+    except LLMError as e:
+        return (check(text, country, retriever, conn, ratifications),
+                f"The LLM step failed ({e}). Showing retrieval results only.")
+
+    findings = []
+    for m in result.matches:
+        clause = get_clause(m.id, conn)  # the quote comes from the database, by ID
+        if clause is None:
+            raise ValueError(f"{m.id} not found in database")
+        parent = get_clause(clause.parent_id, conn) if clause.parent_id else None
+        findings.append(Finding(clause, 0.0, bound[clause.treaty], parent, m.reasoning, m.confidence))
+
+    note = None
+    if result.rejected:
+        note = f"Ignored {len(result.rejected)} ID(s) from the model that were not in the candidate list."
+    return findings, note
 
 
 if __name__ == "__main__":

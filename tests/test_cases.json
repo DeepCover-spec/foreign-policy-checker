@@ -1,37 +1,37 @@
 [
-  {
-    "text": "The government may arrest and detain any person without telling them the reason.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-9-2"]
-  },
-  {
-    "text": "A suspect has no right to a lawyer of their own choosing.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-14-3-b"]
-  },
-  {
-    "text": "Anyone may be held in custody indefinitely without being told the charges.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-9-2"]
-  },
-  {
-    "text": "Citizens are forbidden from sharing ideas or information in writing or in print.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-19-2"]
-  },
-  {
-    "text": "Newspapers must not publish criticism of the government.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-19-2"]
-  },
-  {
-    "text": "Defendants shall not be given an interpreter in court.",
-    "country": "Sri Lanka",
-    "expected": ["ICCPR-14-3-f"]
-  },
-  {
-    "text": "The government may arrest and detain any person without telling them the reason.",
-    "country": "Cuba",
-    "expected": []
-  }
+  {"text": "The government may arrest and detain any person without telling them the reason.", "country": "Sri Lanka", "expected": ["ICCPR-9-2"]},
+  {"text": "A suspect has no right to a lawyer of their own choosing.", "country": "Sri Lanka", "expected": ["ICCPR-14-3-b"]},
+  {"text": "Anyone may be held in custody indefinitely without being told the charges.", "country": "Sri Lanka", "expected": ["ICCPR-9-2"]},
+  {"text": "Citizens are forbidden from sharing ideas or information in writing or in print.", "country": "Sri Lanka", "expected": ["ICCPR-19-2"]},
+  {"text": "Newspapers must not publish criticism of the government.", "country": "Sri Lanka", "expected": ["ICCPR-19-2"]},
+  {"text": "Defendants shall not be given an interpreter in court.", "country": "Sri Lanka", "expected": ["ICCPR-14-3-f"]},
+  {"text": "The government may arrest and detain any person without telling them the reason.", "country": "Cuba", "expected": []},
+  {"text": "Public gatherings of more than five people are prohibited unless the police grant a permit.", "country": "Sri Lanka", "expected": ["ICCPR-21"]},
+  {"text": "Workers are not permitted to form or join trade unions.", "country": "Sri Lanka", "expected": ["ICCPR-22-1"]},
+  {"text": "Suspects awaiting trial shall be held in the same cells as convicted prisoners.", "country": "Sri Lanka", "expected": ["ICCPR-10-2-a"]},
+  {"text": "A person convicted of a crime cannot ask a higher court to review the verdict or sentence.", "country": "Sri Lanka", "expected": ["ICCPR-14-5"]},
+  {"text": "The prosecution may bring a second trial against a person who was already found not guilty of the same offence.", "country": "Sri Lanka", "expected": ["ICCPR-14-7"]},
+  {"text": "Police may use any means necessary to make a suspect confess.", "country": "Sri Lanka", "expected": ["ICCPR-14-3-g"]},
+  {"text": "The death penalty may be imposed for tax evasion and other minor offences.", "country": "Sri Lanka", "expected": ["ICCPR-6-2"]},
+  {"text": "Prisoners may be subjected to beatings and degrading treatment as a form of discipline.", "country": "Sri Lanka", "expected": ["ICCPR-7", "ICCPR-10-1"]},
+  {"text": "Citizens may not leave the country without written permission from the government.", "country": "Sri Lanka", "expected": ["ICCPR-12-2"]},
+  {"text": "A foreign national living lawfully in the country may be deported immediately, with no chance to challenge the decision.", "country": "Sri Lanka", "expected": ["ICCPR-13"]},
+  {"text": "Security agencies may read private letters and tap phone calls without a court order.", "country": "Sri Lanka", "expected": ["ICCPR-17-1"]},
+  {"text": "All residents must follow the state religion and may not change their faith.", "country": "Sri Lanka", "expected": ["ICCPR-18-2", "ICCPR-18-1"]},
+  {"text": "Public campaigns that encourage the country to go to war are permitted.", "country": "Sri Lanka", "expected": ["ICCPR-20-1"]},
+  {"text": "Only members of the majority ethnic group may vote or stand for election.", "country": "Sri Lanka", "expected": ["ICCPR-25-b", "ICCPR-26"]},
+  {"text": "Minority communities may not use their own language in community life.", "country": "Sri Lanka", "expected": ["ICCPR-27"]},
+  {"text": "Children accused of crimes shall be held in the same cells as adult prisoners.", "country": "Sri Lanka", "expected": ["ICCPR-10-2-b", "ICCPR-10-3"]},
+  {"text": "A girl may be married by her family without her agreement.", "country": "Sri Lanka", "expected": ["ICCPR-23-3"]},
+  {"text": "Births need not be registered, and a child may remain without a name.", "country": "Sri Lanka", "expected": ["ICCPR-24-2"]},
+  {"text": "During a state of emergency the government may suspend all rights, including the ban on torture.", "country": "Sri Lanka", "expected": ["ICCPR-4-2"]},
+  {"text": "Women may not give evidence in court or sign contracts without a male guardian's permission.", "country": "Sri Lanka", "expected": ["ICCPR-3", "ICCPR-26"]},
+  {"text": "The Ministry of Finance shall publish its annual budget report by the end of March each year.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Income tax shall be charged at a rate of ten percent on annual earnings above the threshold.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Vehicles shall be inspected every two years to check that they meet emission standards.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "The national flag shall be flown on all government buildings on Independence Day.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Applications for a fishing licence must be submitted at least thirty days before the start of the season.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Public libraries shall be open from nine in the morning until five in the afternoon on weekdays.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Every person who is arrested shall be told the reasons for the arrest at the time of arrest.", "country": "Sri Lanka", "expected": [], "no_match": true},
+  {"text": "Everyone charged with a criminal offence shall be presumed innocent until proved guilty according to law.", "country": "Sri Lanka", "expected": [], "no_match": true}
 ]

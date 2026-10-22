@@ -1,10 +1,11 @@
 import streamlit as st
 
 from treaty_checker.db import build_db, connect
+from treaty_checker.embeddings import HybridRetriever
+from treaty_checker.llm import load_config
 from treaty_checker.loader import load_clauses
-from treaty_checker.pipeline import check
+from treaty_checker.pipeline import check, check_llm
 from treaty_checker.ratifications import bound_by, load_ratifications
-from treaty_checker.retrieval import Retriever
 
 st.set_page_config(page_title="Treaty Clause Checker")
 
@@ -12,11 +13,12 @@ st.set_page_config(page_title="Treaty Clause Checker")
 @st.cache_resource
 def setup():
     build_db()
-    return Retriever(load_clauses("data/clauses.json")), load_ratifications()
+    return HybridRetriever(load_clauses("data/clauses.json")), load_ratifications()
 
 
 retriever, ratifications = setup()
 countries = sorted({r.country for r in ratifications})
+llm_ready = load_config() is not None
 
 st.title("Treaty Clause Checker")
 st.warning(
@@ -28,6 +30,13 @@ st.warning(
 
 country = st.selectbox("Country", countries)
 text = st.text_area("Paste a clause", height=150)
+use_llm = st.checkbox(
+    "Use LLM analysis (chooses and explains the relevant provisions)",
+    value=llm_ready,
+    disabled=not llm_ready,
+    help="Needs LLM_BASE_URL, LLM_API_KEY and LLM_MODEL in the .env file. "
+         "Your pasted clause is sent to that provider.",
+)
 
 if st.button("Check") and text.strip():
     if not bound_by(country, ratifications):
@@ -35,21 +44,35 @@ if st.button("Check") and text.strip():
         st.stop()
 
     conn = connect()
-    findings = check(text, country, retriever, conn, ratifications)
+    note = None
+    if use_llm:
+        with st.spinner("Asking the model..."):
+            findings, note = check_llm(text, country, retriever, conn, ratifications)
+    else:
+        findings = check(text, country, retriever, conn, ratifications)
     conn.close()
 
+    if note:
+        st.warning(note)
     if not findings:
-        st.info("No candidate provisions found.")
+        if use_llm and not note:
+            st.info("The model found no relevant provisions among the candidates. "
+                    "This does not show that no conflict exists.")
+        else:
+            st.info("No candidate provisions found.")
 
-    for f in findings:
+    for i, f in enumerate(findings, start=1):
         c, r = f.clause, f.ratification
         st.subheader(c.citation)
-        st.text(c.text)
+        st.caption(f"Result {i} of {len(findings)}")
+        st.text(c.text)  # always the stored text, never model output
         if not c.verified:
             st.caption("Not yet checked against the official source.")
+        if f.reasoning:
+            st.markdown(f"**Model's note ({f.confidence} confidence):** {f.reasoning}")
+            st.caption("Written by an AI model. Check it against the provision text above.")
         st.markdown(f"**{country}:** {r.status} on {r.date} "
                     f"(data retrieved {r.retrieved_on}) · [source]({c.source_url})")
-        st.caption(f"Match score {f.score:.2f}")
 
         if f.parent:
             with st.expander(f"Context: {f.parent.citation}"):
