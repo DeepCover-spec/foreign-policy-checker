@@ -9,19 +9,31 @@ from treaty_checker.pipeline import check, check_llm
 from treaty_checker.ratifications import load_ratifications
 
 K = 20
+MAX_CONSECUTIVE_ERRORS = 3
 
 
 def evaluate(name, run, cases, skip_no_match=False) -> None:
-    """`run(case)` returns clause IDs in ranked order."""
+    """`run(case)` returns clause IDs in ranked order, or None if the step failed."""
     print(f"\n== {name}")
     scored = top1 = top5 = found = returned = 0
     neg_total = neg_pass = 0
+    errors = streak = 0
     for case in cases:
         if skip_no_match and case.get("no_match"):
             continue
         got = run(case)
-        expected = case["expected"]
 
+        if got is None:  # the LLM step failed: don't score this case
+            errors += 1
+            streak += 1
+            print(f"ERROR   | not scored | {case['text'][:40]}...")
+            if streak >= MAX_CONSECUTIVE_ERRORS:
+                print(f"Stopping: {streak} errors in a row (rate limit?). Try again later.")
+                break
+            continue
+        streak = 0
+
+        expected = case["expected"]
         if not expected:
             neg_total += 1
             ok = not got
@@ -42,9 +54,14 @@ def evaluate(name, run, cases, skip_no_match=False) -> None:
           f"   avg returned: {returned / max(scored, 1):.1f}")
     if neg_total:
         print(f"no-match cases passed: {neg_pass}/{neg_total}")
+    if errors:
+        print(f"errors (not scored): {errors}")
 
 
 def main() -> None:
+    only_llm = "--only-llm" in sys.argv
+    use_llm = only_llm or "--llm" in sys.argv
+
     build_db()
     conn = connect()
     clauses = load_clauses("data/clauses.json")
@@ -60,16 +77,19 @@ def main() -> None:
             return [f.clause.id for f in found]
         return run
 
-    evaluate("bm25", with_retriever(hybrid.bm25), cases, skip_no_match=True)
-    evaluate("embeddings", with_retriever(hybrid.emb), cases, skip_no_match=True)
-    evaluate("hybrid", with_retriever(hybrid), cases, skip_no_match=True)
+    if not only_llm:
+        evaluate("bm25", with_retriever(hybrid.bm25), cases, skip_no_match=True)
+        evaluate("embeddings", with_retriever(hybrid.emb), cases, skip_no_match=True)
+        evaluate("hybrid", with_retriever(hybrid), cases, skip_no_match=True)
 
-    if "--llm" in sys.argv:
+    if use_llm:
         def run_llm(case):
             findings, note = check_llm(case["text"], case["country"], hybrid, conn, ratifications)
+            time.sleep(2.5)  # stay under free-tier requests-per-minute limits
             if note:
                 print(f"        note: {note}")
-            time.sleep(2.5)  # stay under free-tier requests-per-minute limits
+                if note.startswith("The LLM step failed"):
+                    return None  # fell back to retrieval: not an LLM result
             return [f.clause.id for f in findings]
         evaluate("llm (chooses from bm25 top-10 + embeddings top-20)", run_llm, cases)
     conn.close()
