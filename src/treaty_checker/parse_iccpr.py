@@ -1,7 +1,7 @@
 """Split the ICCPR text (extracted by extract.py) into Clause records.
 
 Usage (from the project root):
-    python src/treaty_checker/parse_iccpr.py
+    python src\\treaty_checker\\parse_iccpr.py
 Reads  data/raw/ccpr.txt   Writes data/clauses.json
 """
 import json
@@ -148,5 +148,13 @@ if __name__ == "__main__":
     print(len(records), "records")
 
     compare_with_seed(records, "data/seed_clauses.json")
+
+    # keep earlier manual verification when the text is unchanged
+    if Path(out_path).exists():
+        old = {r["id"]: r for r in json.loads(Path(out_path).read_text(encoding="utf-8"))}
+        for r in records:
+            if r["id"] in old and old[r["id"]]["text"] == r["text"]:
+                r["verified"] = old[r["id"]]["verified"]
+
     Path(out_path).write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Wrote", out_path)

@@ -162,7 +162,7 @@
     "parent_id": "ICCPR-4",
     "text": "No derogation from articles 6, 7, 8 (paragraphs I and 2), 11, 15, 16 and 18 may be made under this provision.",
     "source_url": "https://www.ohchr.org/sites/default/files/ccpr.pdf",
-    "verified": false
+    "verified": true
   },
   {
     "id": "ICCPR-4-3",
@@ -404,7 +404,7 @@
     "parent_id": "ICCPR-9",
     "text": "Anyone who is arrested shall be informed, at the time of arrest, of the reasons for his arrest and shall be promptly informed of any charges against him.",
     "source_url": "https://www.ohchr.org/sites/default/files/ccpr.pdf",
-    "verified": false
+    "verified": true
   },
   {
     "id": "ICCPR-9-3",
@@ -646,7 +646,7 @@
     "parent_id": "ICCPR-14-3",
     "text": "To have adequate time and facilities for the preparation of his defence and to communicate with counsel of his own choosing;",
     "source_url": "https://www.ohchr.org/sites/default/files/ccpr.pdf",
-    "verified": false
+    "verified": true
   },
   {
     "id": "ICCPR-14-3-c",
@@ -910,7 +910,7 @@
     "parent_id": "ICCPR-19",
     "text": "Everyone shall have the right to freedom of expression; this right shall include freedom to seek, receive and impart information and ideas of all kinds, regardless of frontiers, either orally, in writing or in print, in the form of art, or through any other media of his choice.",
     "source_url": "https://www.ohchr.org/sites/default/files/ccpr.pdf",
-    "verified": false
+    "verified": true
   },
   {
     "id": "ICCPR-19-3",
@@ -1163,7 +1163,7 @@
     "parent_id": "ICCPR-25",
     "text": "To vote and to be elected at genuine periodic elections which shall be by universal and equal suffrage and shall be held by secret ballot, guaranteeing the free expression of the will of the electors;",
     "source_url": "https://www.ohchr.org/sites/default/files/ccpr.pdf",
-    "verified": false
+    "verified": true
   },
   {
     "id": "ICCPR-25-c",
