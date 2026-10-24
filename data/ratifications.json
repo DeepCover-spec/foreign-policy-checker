@@ -64,5 +64,61 @@
     "reservations": [],
     "source_url": "https://treaties.un.org/pages/viewdetails.aspx?chapter=4&clang=_en&mtdsg_no=iv-4&src=ind",
     "retrieved_on": "2026-10-11"
+  },
+    {
+    "country": "Sri Lanka",
+    "treaty": "CAT",
+    "status": "acceded",
+    "date": "1994-01-03",
+    "reservations": [],
+    "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-9&chapter=4&clang=_en",
+    "retrieved_on": "2026-10-22"
+  },
+  {
+    "country": "United Kingdom",
+    "treaty": "CAT",
+    "status": "ratified",
+    "date": "1988-12-08",
+    "reservations": [
+      "Upon signature: The United Kingdom reserves the right to formulate, upon ratifying the Convention, any reservations or interpretative declarations which it might consider necessary."
+    ],
+    "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-9&chapter=4&clang=_en",
+    "retrieved_on": "2026-10-22"
+  },
+  {
+    "country": "United States",
+    "treaty": "CAT",
+    "status": "ratified",
+    "date": "1994-10-21",
+    "reservations": [
+      "Upon signature (declaration): The Government of the United States of America reserves the right to communicate, upon ratification, such reservations, interpretive understandings, or declarations as are deemed necessary.",
+      "Reservation I(1): That the United States considers itself bound by the obligation under article 16 to prevent `cruel, inhuman or degrading treatment or punishment', only insofar as the term `cruel, inhuman or degrading treatment or punishment' means the cruel, unusual and inhumane treatment or punishment prohibited by the Fifth, Eighth, and/or Fourteenth Amendments to the Constitution of the United States.",
+      "Reservation I(2): That pursuant to article 30 (2) the United States declares that it does not consider itself bound by Article 30 (1), but reserves the right specifically to agree to follow this or any other procedure for arbitration in a particular case.",
+      "Understanding II(1)(a): That with reference to article 1, the United States understands that, in order to constitute torture, an act must be specifically intended to inflict severe physical or mental pain or suffering and that mental pain or suffering refers to prolonged mental harm caused by or resulting from (1) the intentional infliction or threatened infliction of severe physical pain or suffering; (2) the administration or application, or threatened administration or application, of mind altering substances or other procedures calculated to disrupt profoundly the senses or the personality; (3) the threat of imminent death; or (4) the threat that another person will imminently be subjected to death, severe physical pain or suffering, or the administration or application of mind altering substances or other procedures calculated to disrupt profoundly the senses or personality.",
+      "Understanding II(1)(b): That the United States understands that the definition of torture in article 1 is intended to apply only to acts directed against persons in the offender's custody or physical control.",
+      "Understanding II(1)(c): That with reference to article 1 of the Convention, the United States understands that `sanctions' includes judicially-imposed sanctions and other enforcement actions authorized by United States law or by judicial interpretation of such law. Nonetheless, the United States understands that a State Party could not through its domestic sanctions defeat the object and purpose of the Convention to prohibit torture.",
+      "Understanding II(1)(d): That with reference to article 1 of the Convention, the United States understands that the term `acquiescence' requires that the public official, prior to the activity constituting torture, have awareness of such activity and thereafter breach his legal responsibility to intervene to prevent such activity.",
+      "Understanding II(1)(e): That with reference to article 1 of the Convention, the Unites States understands that noncompliance with applicable legal procedural standards does not per se constitute torture.",
+      "Understanding II(2): That the United States understands the phrase, `where there are substantial grounds for believing that he would be in danger of being subjected to torture,' as used in article 3 of the Convention, to mean `if it is more likely than not that he would be tortured.'",
+      "Understanding II(3): That it is the understanding of the United States that article 14 requires a State Party to provide a private right of action for damages only for acts of torture committed in territory under the jurisdiction of that State Party.",
+      "Understanding II(4): That the United States understands that international law does not prohibit the death penalty, and does not consider this Convention to restrict or prohibit the United States from applying the death penalty consistent with the Fifth, Eighth and/or Fourteenth Amendments to the Constitution of the United States, including any constitutional period of confinement prior to the imposition of the death penalty.",
+      "Understanding II(5): That the United States understands that this Convention shall be implemented by the United States Government to the extent that it exercises legislative and judicial jurisdiction over the matters covered by the Convention and otherwise by the state and local governments. Accordingly, in implementing articles 10-14 and 16, the United States Government shall take measures appropriate to the Federal system to the end that the competent authorities of the constituent units of the United States of America may take appropriate measures for the fulfilment of the Convention.",
+      "Declaration III(1): That the United States declares that the provisions of articles 1 through 16 of the Convention are not self-executing."
+    ],
+    "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-9&chapter=4&clang=_en",
+    "retrieved_on": "2026-10-22"
+  },
+  {
+    "country": "Cuba",
+    "treaty": "CAT",
+    "status": "ratified",
+    "date": "1995-05-17",
+    "reservations": [
+      "Declaration: The Government of the Republic of Cuba deplores the fact that even after the adoption of General Assembly resolution 1514 (XV) containing the Declaration on the granting of independence to colonial countries and peoples, a provision such as paragraph 1 of article 2 was included in the Convention against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment.",
+      "Declaration: The Government of the Republic declares, in accordance with article 28 of the Convention, that the provisions of paragraphs 1, 2 and 3 of article 20 of the Convention will have to be invoked in strict compliance with the principle of the sovereignty of States and implemented with the prior consent of the States Parties.",
+      "Declaration: In connection with the provisions of article 30 of the Convention, the Government of the Republic of Cuba is of the view that any dispute between Parties should be settled by negotiation through the diplomatic channel."
+    ],
+    "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-9&chapter=4&clang=_en",
+    "retrieved_on": "2026-10-22"
   }
 ]

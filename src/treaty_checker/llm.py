@@ -155,5 +155,12 @@ def analyze(text: str, candidates: list[Clause], config: LLMConfig | None = None
     config = config or load_config()
     if config is None:
         raise LLMError("the LLM is not configured (set LLM_BASE_URL, LLM_API_KEY and LLM_MODEL in .env)")
-    raw = chat(config, SYSTEM_PROMPT, build_user_prompt(text, candidates))
-    return parse_and_validate(raw, {c.id for c in candidates})
+    prompt = build_user_prompt(text, candidates)
+    allowed = {c.id for c in candidates}
+    for attempt in range(2):
+        raw = chat(config, SYSTEM_PROMPT, prompt)  # network errors are retried inside chat()
+        try:
+            return parse_and_validate(raw, allowed)
+        except LLMError:
+            if attempt == 1:  # the model sometimes returns an empty or non-JSON reply: ask once more
+                raise

@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -9,6 +10,8 @@ def pdf_to_text(pdf_path: str) -> str:
 
 
 if __name__ == "__main__":
-    text = pdf_to_text("data/raw/ccpr.pdf")
-    Path("data/raw/ccpr.txt").write_text(text, encoding="utf-8")
-    print(len(text), "characters written to data/raw/ccpr.txt")
+    pdf_path = sys.argv[1] if len(sys.argv) > 1 else "data/raw/ccpr.pdf"
+    out_path = sys.argv[2] if len(sys.argv) > 2 else str(Path(pdf_path).with_suffix(".txt"))
+    text = pdf_to_text(pdf_path)
+    Path(out_path).write_text(text, encoding="utf-8")
+    print(len(text), "characters written to", out_path)
