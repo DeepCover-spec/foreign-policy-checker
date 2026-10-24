@@ -1,11 +1,13 @@
 import streamlit as st
 
 from treaty_checker.db import build_db, connect
+from treaty_checker.display import paragraphs_for_display  # new
 from treaty_checker.embeddings import HybridRetriever
 from treaty_checker.llm import load_config
 from treaty_checker.loader import load_clauses
 from treaty_checker.pipeline import check, check_llm
 from treaty_checker.ratifications import bound_by, load_ratifications
+from treaty_checker.reservations import split_reservations
 
 st.set_page_config(page_title="Treaty Clause Checker")
 
@@ -65,7 +67,7 @@ if st.button("Check") and text.strip():
         c, r = f.clause, f.ratification
         st.subheader(c.citation)
         st.caption(f"Result {i} of {len(findings)}")
-        st.text(c.text)  # always the stored text, never model output
+        st.text(paragraphs_for_display(c.text))  # changed: line breaks only; the words are the stored text
         if not c.verified:
             st.caption("Not yet checked against the official source.")
         if f.reasoning:
@@ -76,11 +78,22 @@ if st.button("Check") and text.strip():
 
         if f.parent:
             with st.expander(f"Context: {f.parent.citation}"):
-                st.text(f.parent.text)
+                st.text(paragraphs_for_display(f.parent.text))  # changed
         if r.reservations:
-            with st.expander(f"Reservations and declarations by {country} ({len(r.reservations)})"):
-                st.caption("These may or may not affect this provision. Check each against it.")
-                for res in r.reservations:
-                    st.text(res)
+            relevant, others = split_reservations(r.reservations, int(c.article))
+            if relevant:
+                st.warning(
+                    f"{country} made {len(relevant)} reservation(s) or declaration(s) that mention "
+                    f"article {c.article} of the {c.treaty}. They may limit the obligation here. "
+                    "Read them before relying on this result."
+                )
+                with st.expander(f"Reservations mentioning article {c.article} ({len(relevant)})", expanded=True):
+                    for res in relevant:
+                        st.text(res)
+            if others:
+                with st.expander(f"Other reservations and declarations by {country} ({len(others)})"):
+                    st.caption("These do not name this article, but may still affect it. Check each against it.")
+                    for res in others:
+                        st.text(res)
 
 st.caption(f"Ratification data last retrieved: {max(r.retrieved_on for r in ratifications)}")
