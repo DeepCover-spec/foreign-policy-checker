@@ -1,12 +1,12 @@
 import streamlit as st
 
 from treaty_checker.db import build_db, connect
-from treaty_checker.display import paragraphs_for_display  # new
+from treaty_checker.display import paragraphs_for_display
 from treaty_checker.embeddings import HybridRetriever
 from treaty_checker.llm import load_config
 from treaty_checker.loader import load_clauses
 from treaty_checker.pipeline import check, check_llm
-from treaty_checker.ratifications import bound_by, load_ratifications
+from treaty_checker.ratifications import bound_by, coverage, load_ratifications
 from treaty_checker.reservations import split_reservations
 
 st.set_page_config(page_title="Treaty Clause Checker")
@@ -31,6 +31,13 @@ st.warning(
 )
 
 country = st.selectbox("Country", countries)
+bound_list, not_bound_list = coverage(country, ratifications)
+st.caption(
+    f"Treaties checked: {', '.join(bound_list) or 'none'} (bound). "
+    + (f"Not bound or signed only: {', '.join(not_bound_list)}. " if not_bound_list else "")
+    + "Treaties not in the dataset are not checked at all."
+)
+
 text = st.text_area("Paste a clause", height=150)
 use_llm = st.checkbox(
     "Use LLM analysis (chooses and explains the relevant provisions)",
@@ -67,7 +74,7 @@ if st.button("Check") and text.strip():
         c, r = f.clause, f.ratification
         st.subheader(c.citation)
         st.caption(f"Result {i} of {len(findings)}")
-        st.text(paragraphs_for_display(c.text))  # changed: line breaks only; the words are the stored text
+        st.text(paragraphs_for_display(c.text))  # always the stored text, never model output
         if not c.verified:
             st.caption("Not yet checked against the official source.")
         if f.reasoning:
@@ -78,7 +85,7 @@ if st.button("Check") and text.strip():
 
         if f.parent:
             with st.expander(f"Context: {f.parent.citation}"):
-                st.text(paragraphs_for_display(f.parent.text))  # changed
+                st.text(paragraphs_for_display(f.parent.text))
         if r.reservations:
             relevant, others = split_reservations(r.reservations, int(c.article))
             if relevant:

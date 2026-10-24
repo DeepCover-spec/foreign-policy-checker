@@ -19,9 +19,8 @@ def bound_by(country: str, rows: list[Ratification]) -> list[Ratification]:
     return [r for r in rows if r.country == country and r.status in BINDING]
 
 
-if __name__ == "__main__":
-    rows = load_ratifications()
-    for country in sorted({r.country for r in rows}):
-        for r in bound_by(country, rows):
-            print(country, "|", r.treaty, "|", r.status, "|", r.date,
-                  "|", len(r.reservations), "reservation(s)")
+def coverage(country: str, rows: list[Ratification]) -> tuple[list[str], list[str]]:
+    """Treaties in the dataset: (those the country is bound by, those it is not)."""
+    treaties = sorted({r.treaty for r in rows})
+    bound = {r.treaty for r in rows if r.country == country and r.status in BINDING}
+    return [t for t in treaties if t in bound], [t for t in treaties if t not in bound]
