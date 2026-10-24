@@ -5,11 +5,13 @@ Every ID is checked against the candidate list, and the quoted text always comes
 the database, never from the model. Works with any OpenAI-compatible endpoint
 (Groq, OpenRouter, Ollama, ...), configured in .env.
 """
+import hashlib
 import json
 import os
 import re
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
@@ -41,12 +43,17 @@ class LLMError(Exception):
     """The LLM step failed (not configured, unreachable, or returned unusable output)."""
 
 
+class DailyLimitError(LLMError):
+    """The provider's per-day limit for this model is used up (waiting a few seconds won't help)."""
+
+
 @dataclass(frozen=True)
 class LLMConfig:
     base_url: str
     api_key: str
     model: str
     timeout: int = 120
+    fallback_models: tuple[str, ...] = ()  # tried in order, same endpoint and key, if the daily limit is hit
 
 
 @dataclass(frozen=True)
@@ -60,6 +67,8 @@ class Match:
 class LLMResult:
     matches: list[Match]
     rejected: list[str]  # IDs the model returned that were not in the candidate list
+    model: str = ""            # which model produced this answer
+    used_fallback: bool = False  # True if the primary model's daily limit was hit
 
 
 def load_config() -> LLMConfig | None:
@@ -68,7 +77,8 @@ def load_config() -> LLMConfig | None:
     model = os.getenv("LLM_MODEL")
     if not (base_url and api_key and model):
         return None
-    return LLMConfig(base_url.rstrip("/"), api_key, model, int(os.getenv("LLM_TIMEOUT", "120")))
+    fallbacks = tuple(m.strip() for m in os.getenv("LLM_FALLBACK_MODELS", "").split(",") if m.strip())
+    return LLMConfig(base_url.rstrip("/"), api_key, model, int(os.getenv("LLM_TIMEOUT", "120")), fallbacks)
 
 
 def build_user_prompt(text: str, candidates: list[Clause]) -> str:
@@ -81,6 +91,11 @@ def _wait_seconds(response: requests.Response, attempt: int) -> float:
         return min(float(response.headers.get("Retry-After", "")), 30.0)
     except ValueError:
         return float(2 ** (attempt + 1))
+
+
+def _is_daily_limit(body: str) -> bool:
+    body = (body or "").lower()
+    return "per day" in body or "per-day" in body
 
 
 def chat(config: LLMConfig, system: str, user: str) -> str:
@@ -105,6 +120,8 @@ def chat(config: LLMConfig, system: str, user: str) -> str:
         if r.status_code == 400 and "response_format" in body:
             body.pop("response_format")  # some models/providers don't support JSON mode
             continue
+        if r.status_code == 429 and _is_daily_limit(r.text):
+            raise DailyLimitError(f"daily limit reached for {config.model}: {r.text[:200]}")
         if r.status_code in (429, 500, 502, 503) and attempt < 3:
             time.sleep(_wait_seconds(r, attempt))
             continue
@@ -151,16 +168,74 @@ def parse_and_validate(raw: str, allowed_ids: set[str], max_matches: int = 5) ->
     return LLMResult(matches, rejected)
 
 
+def _cache_path() -> Path | None:
+    value = os.getenv("LLM_CACHE", ".cache/llm_cache.json")
+    return None if value.lower() in ("off", "none", "") else Path(value)
+
+
+def _load_cache() -> dict[str, str]:
+    path = _cache_path()
+    if path is None or not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_cache(cache: dict[str, str]) -> None:
+    path = _cache_path()
+    if path is None:
+        return
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(path)
+    except OSError:
+        pass  # the cache is only an optimisation
+
+
+def _cache_key(model: str, system: str, user: str) -> str:
+    return hashlib.sha256("\n".join((model, system, user)).encode("utf-8")).hexdigest()
+
+
+def _ask(config: LLMConfig, prompt: str, allowed: set[str], cache: dict[str, str]) -> LLMResult:
+    """One model: use a cached reply if there is one, otherwise ask (twice at most)."""
+    key = _cache_key(config.model, SYSTEM_PROMPT, prompt)
+    if key in cache:
+        try:
+            return parse_and_validate(cache[key], allowed)
+        except LLMError:
+            pass  # unusable cache entry: ask again
+    for attempt in range(2):
+        raw = chat(config, SYSTEM_PROMPT, prompt)  # network errors are retried inside chat()
+        try:
+            result = parse_and_validate(raw, allowed)
+        except LLMError:
+            if attempt == 1:  # the model sometimes returns an empty or non-JSON reply: ask once more
+                raise
+            continue
+        cache[key] = raw  # only replies that parsed are cached
+        _save_cache(cache)
+        return result
+    raise LLMError("the LLM endpoint kept failing")
+
+
 def analyze(text: str, candidates: list[Clause], config: LLMConfig | None = None) -> LLMResult:
     config = config or load_config()
     if config is None:
         raise LLMError("the LLM is not configured (set LLM_BASE_URL, LLM_API_KEY and LLM_MODEL in .env)")
     prompt = build_user_prompt(text, candidates)
     allowed = {c.id for c in candidates}
-    for attempt in range(2):
-        raw = chat(config, SYSTEM_PROMPT, prompt)  # network errors are retried inside chat()
+    cache = _load_cache()
+    last_limit: DailyLimitError | None = None
+    for i, model in enumerate((config.model, *config.fallback_models)):
         try:
-            return parse_and_validate(raw, allowed)
-        except LLMError:
-            if attempt == 1:  # the model sometimes returns an empty or non-JSON reply: ask once more
-                raise
+            result = _ask(replace(config, model=model), prompt, allowed, cache)
+        except DailyLimitError as e:  # this model is used up for today: try the next one
+            last_limit = e
+            continue
+        return replace(result, model=model, used_fallback=i > 0)
+    raise last_limit or LLMError("no model available")

@@ -34,7 +34,8 @@ def check_llm(text, country, retriever, conn, ratifications, analyze_fn=analyze)
     """Retrieve a wide candidate list, let the LLM choose from it, validate in code.
 
     Returns (findings, note). `note` is None, or a message to show the user
-    (the LLM step failed and retrieval results are shown instead, or some IDs were dropped).
+    (the LLM step failed and retrieval results are shown instead, a fallback model
+    answered, or some IDs were dropped).
     """
     bound = {r.treaty: r for r in bound_by(country, ratifications)}
     if not bound:
@@ -57,10 +58,12 @@ def check_llm(text, country, retriever, conn, ratifications, analyze_fn=analyze)
         parent = get_clause(clause.parent_id, conn) if clause.parent_id else None
         findings.append(Finding(clause, 0.0, bound[clause.treaty], parent, m.reasoning, m.confidence))
 
-    note = None
+    notes = []
+    if result.used_fallback:
+        notes.append(f"The primary model's daily limit was reached, so this answer came from {result.model}.")
     if result.rejected:
-        note = f"Ignored {len(result.rejected)} ID(s) from the model that were not in the candidate list."
-    return findings, note
+        notes.append(f"Ignored {len(result.rejected)} ID(s) from the model that were not in the candidate list.")
+    return findings, " ".join(notes) or None
 
 
 if __name__ == "__main__":
