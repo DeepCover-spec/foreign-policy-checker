@@ -7401,5 +7401,203 @@
     "text": "To ensure that persons with disabilities have access to services from those involved in the organization of recreational, tourism, leisure and sporting activities.",
     "source_url": "https://www.un.org/disabilities/documents/convention/convoptprot-e.pdf",
     "verified": false
+  },
+  {
+    "id": "GENOCIDE-1",
+    "treaty": "GENOCIDE",
+    "article": "1",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "The Contracting Parties confirm that genocide, whether committed in time of peace or in time of war, is a crime under international law which they undertake to prevent and to punish.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "In the present Convention, genocide means any of the following acts committed with intent to destroy, in whole or in part, a national, ethnical, racial or religious group, as such: (a) Killing members of the group; (b) Causing serious bodily or mental harm to members of the group; (c) Deliberately inflicting on the group conditions of life calculated to bring about its physical destruction in whole or in part; (d) Imposing measures intended to prevent births within the group; (e) Forcibly transferring children of the group to another group.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2-a",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": "a",
+    "parent_id": "GENOCIDE-2",
+    "text": "Killing members of the group;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2-b",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": "b",
+    "parent_id": "GENOCIDE-2",
+    "text": "Causing serious bodily or mental harm to members of the group;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2-c",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": "c",
+    "parent_id": "GENOCIDE-2",
+    "text": "Deliberately inflicting on the group conditions of life calculated to bring about its physical destruction in whole or in part;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2-d",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": "d",
+    "parent_id": "GENOCIDE-2",
+    "text": "Imposing measures intended to prevent births within the group;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-2-e",
+    "treaty": "GENOCIDE",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": "e",
+    "parent_id": "GENOCIDE-2",
+    "text": "Forcibly transferring children of the group to another group.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "The following acts shall be punishable: (a) Genocide; (b) Conspiracy to commit genocide; (c) Direct and public incitement to commit genocide; (d) Attempt to commit genocide; (e) Complicity in genocide.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3-a",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": "a",
+    "parent_id": "GENOCIDE-3",
+    "text": "Genocide;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3-b",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": "b",
+    "parent_id": "GENOCIDE-3",
+    "text": "Conspiracy to commit genocide;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3-c",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": "c",
+    "parent_id": "GENOCIDE-3",
+    "text": "Direct and public incitement to commit genocide;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3-d",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": "d",
+    "parent_id": "GENOCIDE-3",
+    "text": "Attempt to commit genocide;",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-3-e",
+    "treaty": "GENOCIDE",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": "e",
+    "parent_id": "GENOCIDE-3",
+    "text": "Complicity in genocide.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-4",
+    "treaty": "GENOCIDE",
+    "article": "4",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "Persons committing genocide or any of the other acts enumerated in article III shall be punished, whether they are constitutionally responsible rulers, public officials or private individuals.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-5",
+    "treaty": "GENOCIDE",
+    "article": "5",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "The Contracting Parties undertake to enact, in accordance with their respective Constitutions, the necessary legislation to give effect to the provisions of the present Convention, and, in particular, to provide effective penalties for persons guilty of genocide or any of the other acts enumerated in article III.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-6",
+    "treaty": "GENOCIDE",
+    "article": "6",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "Persons charged with genocide or any of the other acts enumerated in article III shall be tried by a competent tribunal of the State in the territory of which the act was committed, or by such international penal tribunal as may have jurisdiction with respect to those Contracting Parties which shall have accepted its jurisdiction.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-7",
+    "treaty": "GENOCIDE",
+    "article": "7",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "Genocide and the other acts enumerated in article III shall not be considered as political crimes for the purpose of extradition. The Contracting Parties pledge themselves in such cases to grant extradition in accordance with their laws and treaties in force.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
+  },
+  {
+    "id": "GENOCIDE-8",
+    "treaty": "GENOCIDE",
+    "article": "8",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "Any Contracting Party may call upon the competent organs of the United Nations to take such action under the Charter of the United Nations as they consider appropriate for the prevention and suppression of acts of genocide or any of the other acts enumerated in article III.",
+    "source_url": "https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-prevention-and-punishment-crime-genocide",
+    "verified": false
   }
 ]

@@ -31,6 +31,22 @@ def drop_page_numbers(raw: str) -> str:
     return "\n".join(out)
 
 
+def roman_to_int(s: str) -> int:
+    values = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100}
+    total = 0
+    for i, ch in enumerate(s):
+        v = values[ch]
+        total += -v if i + 1 < len(s) and values[s[i + 1]] > v else v
+    return total
+
+
+def roman_headings_to_arabic(raw: str) -> str:
+    """Turn lines such as "Article IV" into "Article 4" (headings only: cross-references in the text
+    use a lowercase "article" or sit inside a sentence, so they are left alone)."""
+    return re.sub(r"(?m)^[ \t]*Article[ \t]+([IVXLC]+)[ \t]*$",
+                  lambda m: f"Article {roman_to_int(m.group(1))}", raw)
+
+
 def split_articles(raw: str, last_article: int) -> dict[int, str]:
     raw = re.sub(r"(?m)^[ \t]*PART [IVX]+[ \t]*$", "", raw)
     # Find "Article N" for N = 1, 2, 3 ... in order. The heading may be split across
@@ -160,7 +176,7 @@ if __name__ == "__main__":
     source_url = sys.argv[4]
     out_path = Path(sys.argv[5] if len(sys.argv) > 5 else "data/clauses.json")
 
-    raw = drop_page_numbers(Path(raw_path).read_text(encoding="utf-8"))
+    raw = roman_headings_to_arabic(drop_page_numbers(Path(raw_path).read_text(encoding="utf-8")))
     records = build(raw, treaty, source_url, last_article)
     check(records, raw)
 
