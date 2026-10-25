@@ -53,8 +53,10 @@ def split_paragraphs(body: str) -> list[tuple[str, str]]:
     first = re.search(r"(?<!\S)1 ?\. (?=[A-Z(])", body)
     if not first:
         return []
-    # allow a lead-in sentence such as "The States Parties recognize that:" before "1."
-    if first.start() > 0 and not body[: first.start()].rstrip().endswith(":"):
+    # before "1." allow a lead-in sentence ending in ":" ("The States Parties recognize that:")
+    # or a short article title without a full stop ("Equality and non-discrimination")
+    lead = body[: first.start()].strip()
+    if lead and not (lead.endswith(":") or (len(lead) <= 100 and not lead.endswith("."))):
         return []
     marks, pos, n = [], 0, 1
     while True:
@@ -73,7 +75,7 @@ def split_paragraphs(body: str) -> list[tuple[str, str]]:
 def split_subparagraphs(text: str) -> list[tuple[str, str]]:
     """[(letter, text)] for inline (a), (b), ... markers, else []."""
     marks, pos = [], 0
-    for letter in "abcdefghij":
+    for letter in "abcdefghijklmnopqrstuvwxyz":
         m = re.compile(rf"(?<!\S)\({letter}\) (?=[A-Z])").search(text, pos)
         if not m:
             break
@@ -152,7 +154,10 @@ def compare_with_seed(records: list[dict], seed_path: str) -> None:
 if __name__ == "__main__":
     if len(sys.argv) < 5:
         raise SystemExit("Usage: parse_treaty.py TREATY RAW_TEXT_PATH LAST_ARTICLE SOURCE_URL [OUTPUT_JSON]")
-    treaty, raw_path, last_article, source_url = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4]
+    treaty = sys.argv[1]
+    raw_path = sys.argv[2]
+    last_article = int(sys.argv[3])
+    source_url = sys.argv[4]
     out_path = Path(sys.argv[5] if len(sys.argv) > 5 else "data/clauses.json")
 
     raw = drop_page_numbers(Path(raw_path).read_text(encoding="utf-8"))
