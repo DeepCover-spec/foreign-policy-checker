@@ -87,10 +87,15 @@ def build_user_prompt(text: str, candidates: list[Clause]) -> str:
 
 
 def _wait_seconds(response: requests.Response, attempt: int) -> float:
+    """How long to wait before retrying: what the server asks for, else a growing delay."""
     try:
-        return min(float(response.headers.get("Retry-After", "")), 30.0)
+        return min(float(response.headers.get("Retry-After", "")) + 1, 65.0)
     except ValueError:
-        return float(2 ** (attempt + 1))
+        pass
+    m = re.search(r"try again in (?:(\d+)m)?\s*([\d.]+)s", response.text or "")  # "try again in 6.9s"
+    if m:
+        return min(float(m.group(1) or 0) * 60 + float(m.group(2)) + 1, 65.0)
+    return float(min(2 ** (attempt + 1), 30))
 
 
 def _is_daily_limit(body: str) -> bool:
@@ -107,7 +112,7 @@ def chat(config: LLMConfig, system: str, user: str) -> str:
         "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         "response_format": {"type": "json_object"},
     }
-    for attempt in range(4):
+    for attempt in range(6):
         try:
             r = requests.post(url, headers=headers, json=body, timeout=config.timeout)
         except (requests.ConnectionError, requests.Timeout) as e:
@@ -122,7 +127,7 @@ def chat(config: LLMConfig, system: str, user: str) -> str:
             continue
         if r.status_code == 429 and _is_daily_limit(r.text):
             raise DailyLimitError(f"daily limit reached for {config.model}: {r.text[:200]}")
-        if r.status_code in (429, 500, 502, 503) and attempt < 3:
+        if r.status_code in (429, 500, 502, 503) and attempt < 5:
             time.sleep(_wait_seconds(r, attempt))
             continue
         if r.status_code != 200:
