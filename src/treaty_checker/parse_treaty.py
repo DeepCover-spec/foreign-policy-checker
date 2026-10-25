@@ -18,6 +18,19 @@ def collapse(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def drop_page_numbers(raw: str) -> str:
+    """Remove lines holding only a number (page numbers left by the PDF extraction).
+    A number line directly under a bare "Article" line is kept: it is a split heading."""
+    out, prev = [], ""
+    for line in raw.split("\n"):
+        if re.fullmatch(r"[ \t]*\d{1,3}[ \t]*", line) and prev != "Article":
+            continue
+        out.append(line)
+        if line.strip():
+            prev = line.strip()
+    return "\n".join(out)
+
+
 def split_articles(raw: str, last_article: int) -> dict[int, str]:
     raw = re.sub(r"(?m)^[ \t]*PART [IVX]+[ \t]*$", "", raw)
     # Find "Article N" for N = 1, 2, 3 ... in order. The heading may be split across
@@ -37,7 +50,11 @@ def split_articles(raw: str, last_article: int) -> dict[int, str]:
 
 def split_paragraphs(body: str) -> list[tuple[str, str]]:
     """[(number, text)] if the article has numbered paragraphs 1., 2., ... else []."""
-    if not re.match(r"1 ?\. (?=[A-Z(])", body):
+    first = re.search(r"(?<!\S)1 ?\. (?=[A-Z(])", body)
+    if not first:
+        return []
+    # allow a lead-in sentence such as "The States Parties recognize that:" before "1."
+    if first.start() > 0 and not body[: first.start()].rstrip().endswith(":"):
         return []
     marks, pos, n = [], 0, 1
     while True:
@@ -138,7 +155,7 @@ if __name__ == "__main__":
     treaty, raw_path, last_article, source_url = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4]
     out_path = Path(sys.argv[5] if len(sys.argv) > 5 else "data/clauses.json")
 
-    raw = Path(raw_path).read_text(encoding="utf-8")
+    raw = drop_page_numbers(Path(raw_path).read_text(encoding="utf-8"))
     records = build(raw, treaty, source_url, last_article)
     check(records, raw)
 
