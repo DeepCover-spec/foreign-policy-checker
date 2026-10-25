@@ -2,7 +2,8 @@ import json
 
 from treaty_checker.models import Ratification
 
-BINDING = {"ratified", "acceded", "succeeded"}
+# Ratification, accession, succession, acceptance and approval all make a state a party.
+BINDING = {"ratified", "acceded", "succeeded", "accepted", "approved"}
 ALLOWED = BINDING | {"signed"}
 
 
