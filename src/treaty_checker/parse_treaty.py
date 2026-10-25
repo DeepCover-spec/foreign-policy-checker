@@ -5,6 +5,7 @@ Usage (from the project root):
     python src\\treaty_checker\\parse_treaty.py ICCPR data/raw/ccpr.txt 27 https://www.ohchr.org/sites/default/files/ccpr.pdf
 
 Arguments: TREATY  RAW_TEXT_PATH  LAST_ARTICLE  SOURCE_URL  [OUTPUT_JSON, default data/clauses.json]
+Option:    --whole=1,5   keep these articles as one clause each (not split into paragraphs and items)
 Records of other treaties already in the output file are kept. Records of this treaty are replaced,
 keeping any `verified` flag whose text is unchanged.
 """
@@ -49,11 +50,14 @@ def roman_headings_to_arabic(raw: str) -> str:
 
 def split_articles(raw: str, last_article: int) -> dict[int, str]:
     raw = re.sub(r"(?m)^[ \t]*PART [IVX]+[ \t]*$", "", raw)
+    # "Chapter II" followed by an all-capitals title line, between articles
+    raw = re.sub(r"(?m)^[ \t]*Chapter [IVX]+[ \t]*\n[ \t]*[A-Z][A-Z ,\-]*\n", "", raw)
     # Find "Article N" for N = 1, 2, 3 ... in order. The heading may be split across
     # two lines in the PDF ("Article" / "12"), so allow any whitespace after "Article".
+    # A title may follow on the same line ("Article 1 - Definition of the term ...").
     heads, pos = [], 0
     for n in range(1, last_article + 2):  # one extra, to mark where the last article ends
-        m = re.compile(rf"Article\s+{n}[ \t]*\n").search(raw, pos)
+        m = re.compile(rf"Article\s+{n}(?:[ \t]*[-\u2013\u2014.][^\n]*)?[ \t]*\n").search(raw, pos)
         if not m:
             raise SystemExit(f"Could not find the heading for Article {n}")
         heads.append((n, m))
@@ -112,11 +116,14 @@ def rec(treaty, source_url, id_, article, paragraph, sub, parent, text):
     }
 
 
-def build(raw: str, treaty: str, source_url: str, last_article: int) -> list[dict]:
+def build(raw: str, treaty: str, source_url: str, last_article: int, whole: set[int] = frozenset()) -> list[dict]:
+    """`whole`: articles kept as one clause, not split into paragraphs and items."""
     records = []
     for art, body in split_articles(raw, last_article).items():
         art_id = f"{treaty}-{art}"
         records.append(rec(treaty, source_url, art_id, art, None, None, None, body))
+        if art in whole:
+            continue
         paras = split_paragraphs(body)
         if not paras:  # no numbered paragraphs: lettered items may hang off the article
             for letter, t in split_subparagraphs(body):
@@ -168,16 +175,19 @@ def compare_with_seed(records: list[dict], seed_path: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5:
-        raise SystemExit("Usage: parse_treaty.py TREATY RAW_TEXT_PATH LAST_ARTICLE SOURCE_URL [OUTPUT_JSON]")
-    treaty = sys.argv[1]
-    raw_path = sys.argv[2]
-    last_article = int(sys.argv[3])
-    source_url = sys.argv[4]
-    out_path = Path(sys.argv[5] if len(sys.argv) > 5 else "data/clauses.json")
+    args = [a for a in sys.argv[1:] if not a.startswith("--whole=")]
+    whole = {int(n) for a in sys.argv[1:] if a.startswith("--whole=") for n in a[8:].split(",") if n}
+    if len(args) < 4:
+        raise SystemExit("Usage: parse_treaty.py TREATY RAW_TEXT_PATH LAST_ARTICLE SOURCE_URL [OUTPUT_JSON] "
+                         "[--whole=1,5]")
+    treaty = args[0]
+    raw_path = args[1]
+    last_article = int(args[2])
+    source_url = args[3]
+    out_path = Path(args[4] if len(args) > 4 else "data/clauses.json")
 
     raw = roman_headings_to_arabic(drop_page_numbers(Path(raw_path).read_text(encoding="utf-8")))
-    records = build(raw, treaty, source_url, last_article)
+    records = build(raw, treaty, source_url, last_article, whole)
     check(records, raw)
 
     print("article: paragraphs / lettered items")
