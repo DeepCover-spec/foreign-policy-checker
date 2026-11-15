@@ -52,6 +52,8 @@ def split_articles(raw: str, last_article: int) -> dict[int, str]:
     raw = re.sub(r"(?m)^[ \t]*PART [IVX]+[ \t]*$", "", raw)
     # "Chapter II" followed by an all-capitals title line, between articles
     raw = re.sub(r"(?m)^[ \t]*Chapter [IVX]+[ \t]*\n[ \t]*[A-Z][A-Z ,\-]*\n", "", raw)
+    # "Part III: Title of the part" (the title may wrap over several lines) up to the next Article heading
+    raw = re.sub(r"(?ms)^[ \t]*Part [IVX]+:.*?(?=^[ \t]*Article\b)", "", raw)
     # Find "Article N" for N = 1, 2, 3 ... in order. The heading may be split across
     # two lines in the PDF ("Article" / "12"), so allow any whitespace after "Article".
     # A title may follow on the same line ("Article 1 - Definition of the term ...").

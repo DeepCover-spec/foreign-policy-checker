@@ -22,8 +22,9 @@ NAME_MAP = {
     "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
     "United States of America": "United States",
 }
-SUFFIX_STATUS = {"": "ratified", "a": "acceded", "d": "succeeded", "A": "accepted", "AA": "approved"}
-BINDING = {"ratified", "acceded", "succeeded"}  # what the app currently treats as bound
+SUFFIX_STATUS = {"": "ratified", "a": "acceded", "d": "succeeded", "A": "accepted",
+                 "AA": "approved", "c": "confirmed"}
+BINDING = {"ratified", "acceded", "succeeded", "accepted", "approved", "confirmed"}  # what the app treats as bound
 
 
 def clean_name(fragment: str) -> str:
@@ -74,7 +75,11 @@ def reservation_entries(fragment: str) -> list[str]:
 
 
 def parse_date(text: str) -> str:
-    return datetime.strptime(re.sub(r"\s+", " ", text).strip(), "%d %b %Y").strftime("%Y-%m-%d")
+    """The first date in the text ("15 Dec 2004"); a trailing code such as "d" is ignored."""
+    m = re.search(r"\d{1,2} \w{3} \d{4}", re.sub(r"\s+", " ", text))
+    if not m:
+        raise SystemExit(f"Cannot read a date from {text!r}")
+    return datetime.strptime(m.group(0), "%d %b %Y").strftime("%Y-%m-%d")
 
 
 def parse_page(page: str) -> dict:
