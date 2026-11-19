@@ -12945,5 +12945,148 @@
     "text": "In all cases, and in particular in all matters relating to this article, the best interests of the child shall be a primary consideration, and a child who is capable of forming his or her own views shall have the right to express those views freely, the views of the child being given due weight in accordance with the age and maturity of the child.",
     "source_url": "https://www.ohchr.org/sites/default/files/ced.pdf",
     "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-1",
+    "treaty": "ICCPR-OP2",
+    "article": "1",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "1. No one within the jurisdiction of a State Party to the present Protocol shall be executed. 2. Each State Party shall take all necessary measures to abolish the death penalty within its jurisdiction.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-1-1",
+    "treaty": "ICCPR-OP2",
+    "article": "1",
+    "paragraph": "1",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-1",
+    "text": "No one within the jurisdiction of a State Party to the present Protocol shall be executed.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-1-2",
+    "treaty": "ICCPR-OP2",
+    "article": "1",
+    "paragraph": "2",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-1",
+    "text": "Each State Party shall take all necessary measures to abolish the death penalty within its jurisdiction.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-2",
+    "treaty": "ICCPR-OP2",
+    "article": "2",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "1. No reservation is admissible to the present Protocol, except for a reservation made at the time of ratification or accession that provides for the application of the death penalty in time of war pursuant to a conviction for a most serious crime of a military nature committed during wartime. 2. The State Party making such a reservation shall at the time of ratification or accession communicate to the Secretary-General of the United Nations the relevant provisions of its national legislation applicable during wartime. 3. The State Party having made such a reservation shall notify the Secretary-General of the United Nations of any beginning or ending of a state of war applicable to its territory.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-2-1",
+    "treaty": "ICCPR-OP2",
+    "article": "2",
+    "paragraph": "1",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-2",
+    "text": "No reservation is admissible to the present Protocol, except for a reservation made at the time of ratification or accession that provides for the application of the death penalty in time of war pursuant to a conviction for a most serious crime of a military nature committed during wartime.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-2-2",
+    "treaty": "ICCPR-OP2",
+    "article": "2",
+    "paragraph": "2",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-2",
+    "text": "The State Party making such a reservation shall at the time of ratification or accession communicate to the Secretary-General of the United Nations the relevant provisions of its national legislation applicable during wartime.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-2-3",
+    "treaty": "ICCPR-OP2",
+    "article": "2",
+    "paragraph": "3",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-2",
+    "text": "The State Party having made such a reservation shall notify the Secretary-General of the United Nations of any beginning or ending of a state of war applicable to its territory.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-3",
+    "treaty": "ICCPR-OP2",
+    "article": "3",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "The States Parties to the present Protocol shall include in the reports they submit to the Human Rights Committee, in accordance with article 40 of the Covenant, information on the measures that they have adopted to give effect to the present Protocol.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-4",
+    "treaty": "ICCPR-OP2",
+    "article": "4",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "With respect to the States Parties to the Covenant that have made a declaration under article 41, the competence of the Human Rights Committee to receive and consider communications when a State Party claims that another State Party is not fulfilling its obligations shall extend to the provisions of the present Protocol, unless the State Party concerned has made a statement to the contrary at the moment of ratification or accession.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-5",
+    "treaty": "ICCPR-OP2",
+    "article": "5",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "With respect to the States Parties to the first Optional Protocol to the International Covenant on Civil and Political Rights adopted on 16 December 1966, the competence of the Human Rights Committee to receive and consider communications from individuals subject to its jurisdiction shall extend to the provisions of the present Protocol, unless the State Party concerned has made a statement to the contrary at the moment of ratification or accession.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-6",
+    "treaty": "ICCPR-OP2",
+    "article": "6",
+    "paragraph": null,
+    "subparagraph": null,
+    "parent_id": null,
+    "text": "1. The provisions of the present Protocol shall apply as additional provisions to the Covenant. 2. Without prejudice to the possibility of a reservation under article 2 of the present Protocol, the right guaranteed in article 1, paragraph 1, of the present Protocol shall not be subject to any derogation under article 4 of the Covenant.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-6-1",
+    "treaty": "ICCPR-OP2",
+    "article": "6",
+    "paragraph": "1",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-6",
+    "text": "The provisions of the present Protocol shall apply as additional provisions to the Covenant.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
+  },
+  {
+    "id": "ICCPR-OP2-6-2",
+    "treaty": "ICCPR-OP2",
+    "article": "6",
+    "paragraph": "2",
+    "subparagraph": null,
+    "parent_id": "ICCPR-OP2-6",
+    "text": "Without prejudice to the possibility of a reservation under article 2 of the present Protocol, the right guaranteed in article 1, paragraph 1, of the present Protocol shall not be subject to any derogation under article 4 of the Covenant.",
+    "source_url": "https://www.ohchr.org/sites/default/files/ccpr-death.pdf",
+    "verified": false
   }
 ]
