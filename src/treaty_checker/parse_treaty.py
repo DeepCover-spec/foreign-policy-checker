@@ -5,7 +5,8 @@ Usage (from the project root):
     python src\\treaty_checker\\parse_treaty.py ICCPR data/raw/ccpr.txt 27 https://www.ohchr.org/sites/default/files/ccpr.pdf
 
 Arguments: TREATY  RAW_TEXT_PATH  LAST_ARTICLE  SOURCE_URL  [OUTPUT_JSON, default data/clauses.json]
-Option:    --whole=1,5   keep these articles as one clause each (not split into paragraphs and items)
+Options:   --whole=1,5   keep these articles as one clause each (not split into paragraphs and items)
+           --extra=8bis,15bis,15ter   articles numbered "8 bis" etc.: each comes right after its base article
 Records of other treaties already in the output file are kept. Records of this treaty are replaced,
 keeping any `verified` flag whose text is unchanged.
 """
@@ -48,7 +49,16 @@ def roman_headings_to_arabic(raw: str) -> str:
                   lambda m: f"Article {roman_to_int(m.group(1))}", raw)
 
 
-def split_articles(raw: str, last_article: int) -> dict[int, str]:
+def article_labels(last_article: int, extra=()) -> list[str]:
+    """["1", "2", ..., "8", "8bis", "9", ...]: the headings to look for, in order."""
+    out = []
+    for n in range(1, last_article + 1):
+        out.append(str(n))
+        out += [e for e in extra if re.fullmatch(rf"{n}[a-z]+", e)]
+    return out
+
+
+def split_articles(raw: str, last_article: int, extra=()) -> dict[str, str]:
     raw = re.sub(r"(?m)^[ \t]*(?:PART|Part) [IVX]+[ \t]*$", "", raw)  # a bare "PART II" / "Part II" line
     # "Chapter II" followed by an all-capitals title line, between articles
     raw = re.sub(r"(?m)^[ \t]*Chapter [IVX]+[ \t]*\n[ \t]*[A-Z][A-Z ,\-]*\n", "", raw)
@@ -58,11 +68,13 @@ def split_articles(raw: str, last_article: int) -> dict[int, str]:
     # two lines in the PDF ("Article" / "12"), so allow any whitespace after "Article".
     # A title may follow on the same line ("Article 1 - Definition of the term ...").
     heads, pos = [], 0
-    for n in range(1, last_article + 2):  # one extra, to mark where the last article ends
-        m = re.compile(rf"Article\s+{n}(?:[ \t]*[-\u2013\u2014.][^\n]*)?[ \t]*\n").search(raw, pos)
+    labels = article_labels(last_article, extra)
+    for label in labels + [str(last_article + 1)]:  # one extra, to mark where the last article ends
+        words = re.sub(r"(?<=\d)(?=[a-z])", r"\\s?", label)  # "8bis" also matches "8 bis"
+        m = re.compile(rf"Article\s+{words}(?:[ \t]*[-–—.][^\n]*)?[ \t]*\n").search(raw, pos)
         if not m:
-            raise SystemExit(f"Could not find the heading for Article {n}")
-        heads.append((n, m))
+            raise SystemExit(f"Could not find the heading for Article {label}")
+        heads.append((label, m))
         pos = m.end()
     articles = {}
     for (n, m), (_, nxt) in zip(heads, heads[1:]):
@@ -72,7 +84,7 @@ def split_articles(raw: str, last_article: int) -> dict[int, str]:
 
 def split_paragraphs(body: str) -> list[tuple[str, str]]:
     """[(number, text)] if the article has numbered paragraphs 1., 2., ... else []."""
-    first = re.search(r"(?<!\S)1 ?\. (?=[A-Z(])", body)
+    first = re.search(r"(?<!\S)1 ?\. (?=[A-Z(\u201c])", body)
     if not first:
         return []
     # before "1." allow a lead-in sentence ending in ":" ("The States Parties recognize that:")
@@ -82,7 +94,7 @@ def split_paragraphs(body: str) -> list[tuple[str, str]]:
         return []
     marks, pos, n = [], 0, 1
     while True:
-        m = re.compile(rf"(?<!\S){n} ?\. (?=[A-Z(])").search(body, pos)
+        m = re.compile(rf"(?<!\S){n} ?\. (?=[A-Z(\u201c])").search(body, pos)
         if not m:
             break
         marks.append((str(n), m.start(), m.end()))
@@ -98,7 +110,7 @@ def split_subparagraphs(text: str) -> list[tuple[str, str]]:
     """[(letter, text)] for inline (a), (b), ... markers, else []."""
     marks, pos = [], 0
     for letter in "abcdefghijklmnopqrstuvwxyz":
-        m = re.compile(rf"(?<!\S)\({letter}\) (?=[A-Z])").search(text, pos)
+        m = re.compile(rf"(?<!\S)\({letter}\) (?=[A-Z\u201c])").search(text, pos)
         if not m:
             break
         marks.append((letter, m.start(), m.end()))
@@ -118,13 +130,13 @@ def rec(treaty, source_url, id_, article, paragraph, sub, parent, text):
     }
 
 
-def build(raw: str, treaty: str, source_url: str, last_article: int, whole: set[int] = frozenset()) -> list[dict]:
+def build(raw: str, treaty: str, source_url: str, last_article: int, whole=frozenset(), extra=()) -> list[dict]:
     """`whole`: articles kept as one clause, not split into paragraphs and items."""
     records = []
-    for art, body in split_articles(raw, last_article).items():
+    for art, body in split_articles(raw, last_article, extra).items():
         art_id = f"{treaty}-{art}"
         records.append(rec(treaty, source_url, art_id, art, None, None, None, body))
-        if art in whole:
+        if art.isdigit() and int(art) in whole:
             continue
         paras = split_paragraphs(body)
         if not paras:  # no numbered paragraphs: lettered items may hang off the article
@@ -177,11 +189,12 @@ def compare_with_seed(records: list[dict], seed_path: str) -> None:
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if not a.startswith("--whole=")]
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
     whole = {int(n) for a in sys.argv[1:] if a.startswith("--whole=") for n in a[8:].split(",") if n}
+    extra = [e for a in sys.argv[1:] if a.startswith("--extra=") for e in a[8:].split(",") if e]
     if len(args) < 4:
         raise SystemExit("Usage: parse_treaty.py TREATY RAW_TEXT_PATH LAST_ARTICLE SOURCE_URL [OUTPUT_JSON] "
-                         "[--whole=1,5]")
+                         "[--whole=1,5] [--extra=8bis,15bis]")
     treaty = args[0]
     raw_path = args[1]
     last_article = int(args[2])
@@ -189,15 +202,15 @@ if __name__ == "__main__":
     out_path = Path(args[4] if len(args) > 4 else "data/clauses.json")
 
     raw = roman_headings_to_arabic(drop_page_numbers(Path(raw_path).read_text(encoding="utf-8")))
-    records = build(raw, treaty, source_url, last_article, whole)
+    records = build(raw, treaty, source_url, last_article, whole, extra)
     check(records, raw)
 
     print("article: paragraphs / lettered items")
-    for art in range(1, last_article + 1):
-        mine = [r for r in records if r["article"] == str(art)]
+    for art in article_labels(last_article, extra):
+        mine = [r for r in records if r["article"] == art]
         paras = [r["paragraph"] for r in mine if r["paragraph"] and not r["subparagraph"]]
         subs = [(r["paragraph"] or "-") + r["subparagraph"] for r in mine if r["subparagraph"]]
-        print(f"  {art:>2}: {len(paras)} para {' '.join(subs)}")
+        print(f"  {art:>5}: {len(paras)} para {' '.join(subs)}")
     print(len(records), "records")
 
     if treaty == "ICCPR":

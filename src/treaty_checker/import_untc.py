@@ -1,6 +1,6 @@
 """Import ratification status and reservations from a UN Treaty Collection page that you saved yourself.
 
-In your browser: open the treaty's page on treaties.un.org, scroll to the bottom once, press Ctrl+S and
+In browser: open the treaty's page on treaties.un.org, scroll to the bottom once, press Ctrl+S and
 save as "Webpage, HTML only". This script only reads that file; it makes no requests to the UN.
 
 Usage (from the project root):
@@ -124,10 +124,15 @@ def parse_page(page: str) -> dict:
     return {"status_date": status_date, "rows": rows, "decls": decls, "notes": notes}
 
 
-def build_entries(treaty: str, url: str, parsed: dict) -> list[dict]:
-    entries = []
+def build_entries(treaty: str, url: str, parsed: dict) -> tuple[list[dict], list[str]]:
+    """(entries, left_out): the UN shows a state that has withdrawn with its date in [brackets];
+    such states are left out of the entries (they are no longer bound) and listed in left_out."""
+    entries, left_out = [], []
     for row in parsed["rows"]:
         rat = row["ratification"]
+        if rat.startswith("[") or (not rat and row["signature"].startswith("[")):
+            left_out.append(f"{row['country']} {rat or row['signature']}")
+            continue
         m = re.match(r"^(\d{1,2} \w{3} \d{4})\s*(\S*)$", rat)
         if m:
             suffix = m.group(2)
@@ -144,7 +149,7 @@ def build_entries(treaty: str, url: str, parsed: dict) -> list[dict]:
         reservations += [f"UN note {n}: {parsed['notes'][n]}" for n in row["notes"] if n in parsed["notes"]]
         entries.append({"country": row["country"], "treaty": treaty, "status": status, "date": date,
                         "reservations": reservations, "source_url": url, "retrieved_on": parsed["status_date"]})
-    return sorted(entries, key=lambda e: e["country"])
+    return sorted(entries, key=lambda e: e["country"]), left_out
 
 
 def compare(old: list[dict], new: list[dict]) -> None:
@@ -175,12 +180,14 @@ if __name__ == "__main__":
     out_path = Path(sys.argv[4] if len(sys.argv) > 4 else "data/ratifications.json")
 
     parsed = parse_page(Path(html_path).read_text(encoding="utf-8", errors="replace"))
-    entries = build_entries(treaty, url, parsed)
+    entries, left_out = build_entries(treaty, url, parsed)
     counts: dict[str, int] = {}
     for e in entries:
         counts[e["status"]] = counts.get(e["status"], 0) + 1
     print(f"Status as at {parsed['status_date']}: {len(entries)} participants {counts}")
     print(f"{sum(1 for e in entries if e['reservations'])} with reservations/declarations/notes")
+    if left_out:
+        print(f"Left out (shown in [brackets] by the UN, i.e. withdrawn): {'; '.join(left_out)}")
     odd = sorted(s for s in counts if s not in BINDING and s != "signed")
     if odd:
         print(f"WARNING: statuses {odd} are legally binding but the app does not count them as bound yet.")
