@@ -67,19 +67,21 @@ def split_articles(raw: str, last_article: int, extra=()) -> dict[str, str]:
     # Find "Article N" for N = 1, 2, 3 ... in order. The heading may be split across
     # two lines in the PDF ("Article" / "12"), so allow any whitespace after "Article".
     # A title may follow on the same line ("Article 1 - Definition of the term ...").
-    heads, pos = [], 0
-    labels = article_labels(last_article, extra)
-    for label in labels + [str(last_article + 1)]:  # one extra, to mark where the last article ends
+    spans, pos = [], 0  # (label, where the heading starts, where its body starts)
+    for label in article_labels(last_article, extra):
         words = re.sub(r"(?<=\d)(?=[a-z])", r"\\s?", label)  # "8bis" also matches "8 bis"
         m = re.compile(rf"Article\s+{words}(?:[ \t]*[-–—.][^\n]*)?[ \t]*\n").search(raw, pos)
         if not m:
             raise SystemExit(f"Could not find the heading for Article {label}")
-        heads.append((label, m))
+        spans.append((label, m.start(), m.end()))
         pos = m.end()
-    articles = {}
-    for (n, m), (_, nxt) in zip(heads, heads[1:]):
-        articles[n] = collapse(raw[m.end() : nxt.start()])
-    return articles
+    # The last article ends at the next heading ("Article 17") if there is one, else at the closing
+    # formula ("IN WITNESS WHEREOF ...", "DONE at ..."), else at the end of the text.
+    nxt = re.compile(rf"Article\s+{last_article + 1}(?:[ \t]*[-–—.][^\n]*)?[ \t]*\n").search(raw, pos)
+    if not nxt:
+        nxt = re.compile(r"(?mi)^[ \t]*(?:in witness whereof|in faith whereof|done at)").search(raw, pos)
+    ends = [start for _, start, _ in spans[1:]] + [nxt.start() if nxt else len(raw)]
+    return {label: collapse(raw[body:end]) for (label, _, body), end in zip(spans, ends)}
 
 
 def split_paragraphs(body: str) -> list[tuple[str, str]]:
@@ -212,6 +214,8 @@ if __name__ == "__main__":
         subs = [(r["paragraph"] or "-") + r["subparagraph"] for r in mine if r["subparagraph"]]
         print(f"  {art:>5}: {len(paras)} para {' '.join(subs)}")
     print(len(records), "records")
+    last = next(r for r in records if r["id"] == f"{treaty}-{article_labels(last_article, extra)[-1]}")
+    print("The last article ends with:", "..." + last["text"][-150:])  # check that no closing text is included
 
     if treaty == "ICCPR":
         compare_with_seed(records, "data/seed_clauses.json")
