@@ -1,6 +1,6 @@
 """Import ratification status and reservations from a UN Treaty Collection page that you saved yourself.
 
-In browser: open the treaty's page on treaties.un.org, scroll to the bottom once, press Ctrl+S and
+In your browser: open the treaty's page on treaties.un.org, scroll to the bottom once, press Ctrl+S and
 save as "Webpage, HTML only". This script only reads that file; it makes no requests to the UN.
 
 Usage (from the project root):
@@ -96,6 +96,8 @@ def parse_page(page: str) -> dict:
     rows = []
     for tr in re.findall(r"(?is)<tr class=\"trB[^\"]*\">(.*?)</tr>", table):
         tds = re.findall(r"(?is)<td[^>]*>(.*?)</td>", tr)
+        if len(tds) == 2:  # a treaty that cannot be signed (the 1967 Protocol): no signature column
+            tds = [tds[0], "", tds[1]]
         if len(tds) != 3:
             raise SystemExit(f"Unexpected row layout: {tr[:200]!r}")
         name = clean_name(tds[0])
